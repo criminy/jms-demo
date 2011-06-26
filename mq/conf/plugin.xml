@@ -1,0 +1,61 @@
+<!--
+
+    Copyright (C) 2011 GAAOC-IT
+
+    GAJE EFiling is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    GAJE EFiling is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with GAJE EFiling.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="
+     http://camel.apache.org/schema/spring 
+   http://camel.apache.org/schema/spring/camel-spring.xsd
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<description>
+		This is a make-shift plugin system, which allows us to 
+		add additional functionality into the testing activemq message queue.
+		
+		/META-INF/mq-plugins/*-plugin.xml files are loaded as spring configs,
+		and if they export camel route spring beans, they are picked up by camel.
+		
+		This plugin system also exports a jms connection factory and 
+		the activemq camel component.
+			
+	</description>
+	
+	<!-- import mq plugins -->
+	<import resource="classpath*:/META-INF/mq-plugins/*-plugin.xml" />
+
+	
+
+	<!-- camel configuration for the plugins. -->
+	<camel:camelContext>
+		<camel:contextScan/>
+	</camel:camelContext>
+	
+	<!--  for plugins which want activemq access and (optionally) activemq access through camel.-->
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+	
+	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+
+</beans>

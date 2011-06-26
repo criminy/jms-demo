@@ -1,0 +1,91 @@
+<project name="jms-demo" basedir=".">
+
+	<target name="target">
+		<mkdir dir="target" />
+	</target>
+
+	<target name="check-license">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="com.mycila.maven-license-plugin:maven-license-plugin:check" />
+		</exec>
+	</target>
+
+	<target name="format-license">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="com.mycila.maven-license-plugin:maven-license-plugin:format" />
+		</exec>
+	</target>
+
+	<target name="fork-run-mq" depends="target">
+		<exec executable="mvn" spawn="true">
+			<arg value="-l" />
+			<arg value="target/mq.log" />
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="mq/pom.xml" />
+			<arg value="org.apache.activemq.tooling:maven-activemq-plugin:5.5.0:run" />
+		</exec>
+	</target>
+
+	<target name="run-mq">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="mq/pom.xml" />
+			<arg value="org.apache.activemq.tooling:maven-activemq-plugin:5.5.0:run" />
+		</exec>
+	</target>
+
+	<target name="check-mq">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="mq-control-plugin/pom.xml" />
+			<arg value="exec:java" />
+			<arg value="-Dexec.mainClass=us.gaje.mq.Status" />
+		</exec>
+	</target>
+
+	<target name="stop-mq">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="mq-control-plugin/pom.xml" />
+			<arg value="exec:java" />
+			<arg value="-Dexec.mainClass=us.gaje.mq.Shutdown" />
+		</exec>
+	</target>
+
+	<target name="fork-stop-mq">
+		<exec executable="mvn" spawn="true" depends="target">
+			<arg value="-l" />
+			<arg value="target/mq-stop.log" />
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="mq-control-plugin/pom.xml" />
+			<arg value="exec:java" />
+			<arg value="-Dexec.mainClass=us.gaje.mq.Shutdown" />
+		</exec>
+	</target>
+
+	<target name="run-consumer">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="demo-consumer/pom.xml" />
+			<arg value="exec:java" />
+			<arg value="-Dexec.mainClass=net.sheenobu.consumer.Main" />
+		</exec>
+	</target>
+	<target name="run-producer">
+		<exec executable="mvn">
+			<arg value="-q" />
+			<arg value="-f" />
+			<arg value="demo-producer/pom.xml" />
+			<arg value="exec:java" />
+			<arg value="-Dexec.mainClass=net.sheenobu.producer.Main" />
+		</exec>
+	</target>
+</project>

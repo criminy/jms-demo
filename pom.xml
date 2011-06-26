@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.sheenobu</groupId>
+	<artifactId>jms-demo</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>jms-demo</name>
+
+	<modules>
+		<module>mq</module>
+		<module>mq-control-plugin</module>
+		<module>mq-derby-plugin</module>
+		<module>mq-null-plugin</module>
+		<module>gaje-parent</module>
+		
+		
+		<module>demo-consumer</module>
+		<module>demo-producer</module>
+		<module>demo-parent</module>
+	</modules>
+	
+</project>
